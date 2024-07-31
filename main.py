@@ -81,6 +81,8 @@ def drawStdScreen():
 
     drawBoard(Cols)
 
+    stdscr.addnstr(Rows-1,1," Step: 1",Cols-1)
+
     stdscr.refresh()
 
 ####################################################################
@@ -119,11 +121,18 @@ def calculateTransformation(Rows,Cols):
         while IterX<(Cols-2):
             Sum=sumOfNeighbors(IterY,IterX)
 
-            if Sum==3:
+            if NewBoard[IterY][IterX]==" " and Sum==3:
                 NewBoard[IterY][IterX]="O"
+            # When dead cell have 3 neighbors, he start be alive
+
+            if NewBoard[IterY][IterX]=="O" and Sum in [2,3]:
+                NewBoard[IterY][IterX]="O"
+            # When alive cell have 2 or 3 neighbors, he stay alive
 
             if not(Sum in [2,3]):
                 NewBoard[IterY][IterX]=" "
+            # When cell have other number of neighbors, than 2 or 3, 
+            # he start or stay dead
 
             IterX+=1
         IterY+=1
@@ -135,6 +144,7 @@ def copyArray():
     for Item in NewBoard:
         Board[Iter]=Item
         Iter+=1
+    # This update all cells in same time
 
 ####################################################################
 
@@ -148,23 +158,31 @@ def main():
 
     Rows,Cols=stdscr.getmaxyx()
     generateBord()
-    generateStartConf(Rows,Cols,400)
+    generateStartConf(Rows,Cols,500)
+    # Generate board with start configuration
 
     try:
         drawStdScreen()
+        # Draw all TUI
+
         Iter=1
         while True:
             time.sleep(0.1)
 
             calculateTransformation(Rows,Cols)
-
             copyArray()
+            # Calculate new position of cells and update them in same time
 
             drawBoard(Cols)
+            # Redraw board
 
             stdscr.addnstr(Rows-1,1," Step: "+str(Iter),Cols-1)
+            # Redraw number of step
+
             Iter+=1
+
             stdscr.refresh()
+
     except (KeyboardInterrupt, SystemExit):
         pass
     except Exception as e:
