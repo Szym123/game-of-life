@@ -1,9 +1,10 @@
 from curses import initscr,endwin
 from signal import signal,SIGWINCH
-from time import sleep
 
 import random
 import time
+
+####################################################################
 
 stdscr=initscr()
 Board=[]
@@ -38,15 +39,15 @@ def settingParsing(Board):
 
 ####################################################################
 
-def generateBord():
+def generateBord(Size):
 
     Rows,Cols=stdscr.getmaxyx()
-    for _ in range(Rows-2):
-        Board.append([" " for _ in range(Cols-2)])
+    for _ in range(Size):
+        Board.append([" " for _ in range(Size)])
     # Generate matrix of dead cell with specific size
 
-    for _ in range(Rows-2):
-        NewBoard.append([" " for _ in range(Cols-2)])
+    for _ in range(Size):
+        NewBoard.append([" " for _ in range(Size)])
 
 ####################################################################
 
@@ -60,12 +61,13 @@ def generateStartConf(Rows,Cols,Number):
 
 ####################################################################
 
-def drawBoard(Cols):
-    Iter=1
-    for Line in Board:
-        String="".join(Line)
-        stdscr.addnstr(Iter,1,String,Cols-1)
-        Iter+=1 
+def drawBoard(Rows,Cols):
+    for PosY in range(Rows-2):
+        String=""
+        for PosX in range(Cols-2):
+            String+=Board[PosY][PosX]
+
+        stdscr.addnstr(PosY+1,1,String,Cols-1)
 
 ####################################################################
 
@@ -79,9 +81,9 @@ def drawStdScreen():
     stdscr.addnstr(0,1," Game of Life ",Cols-1)
     # Draw border with name of program
 
-    drawBoard(Cols)
+    drawBoard(Rows,Cols)
 
-    stdscr.addnstr(Rows-1,1," Step: 1",Cols-1)
+    stdscr.addnstr(Rows-1,1," Step: 1 ",Cols-1)
 
     stdscr.refresh()
 
@@ -157,7 +159,7 @@ def main():
     initscr()
 
     Rows,Cols=stdscr.getmaxyx()
-    generateBord()
+    generateBord(1000)
     generateStartConf(Rows,Cols,500)
     # Generate board with start configuration
 
@@ -171,12 +173,13 @@ def main():
 
             calculateTransformation(Rows,Cols)
             copyArray()
-            # Calculate new position of cells and update them in same time
+            # Calculate new position of cells and 
+            # update them in same time
 
-            drawBoard(Cols)
+            drawBoard(Rows,Cols)
             # Redraw board
 
-            stdscr.addnstr(Rows-1,1," Step: "+str(Iter),Cols-1)
+            stdscr.addnstr(Rows-1,1," Step: "+str(Iter)+" ",Cols-1)
             # Redraw number of step
 
             Iter+=1
