@@ -61,13 +61,34 @@ def generateBord(Size):
 
 ####################################################################
 
-def generateStartConf(Rows,Cols,Number):
+def modifiedGauss(Range):
+    while True:
+        Result=int(random.gauss(Range/2,8.0))
+
+        if 0<=Result<=Range:
+            return Result
+
+####################################################################
+
+def generateStartConf(Rows,Cols,Number,Range,Option):
     for Iter in range(Number):
-        y=random.randrange(Rows-2)
-        x=random.randrange(Cols-2)
-        # Generate radom position of living cell
+        if Option=="fixed":
+            y=random.randrange(Rows-2)
+            x=random.randrange(Cols-2)
+        # Generate with fixed distribution
+
+        elif Option=="triang":
+            y=int(Range*random.triangular(0,1))
+            x=int(Range*random.triangular(0,1))
+        # Generate with triangular distribution
+
+        elif Option=="gauss":
+            y=modifiedGauss(50)
+            x=modifiedGauss(50)
+        # Generate with Gauss distribution
 
         Board[y][x]="O"
+        # Generate radom position of living cell
 
 ####################################################################
 
@@ -165,15 +186,15 @@ signal(SIGWINCH,resizeHandler)
 ####################################################################    
 
 def main():
-
     Tab=openFile("config.txt")
     Dictionary=parsConfig(Tab)
+    # Dowload and pars configuration data
 
     initscr()
 
     Rows,Cols=stdscr.getmaxyx()
     generateBord(int(Dictionary["board_size"]))
-    generateStartConf(Rows,Cols,500)
+    generateStartConf(Rows,Cols,int(Dictionary["numbers_of_cell"]),80,Dictionary["random_distribution"])
     # Generate board with start configuration
 
     try:
