@@ -30,12 +30,22 @@ def openFile(Name):
         # return table of line
 
     except:
-        return -1
+        print("There is problem with config.txt")
+        exit()
 
 ####################################################################
 
-def settingParsing(Board):
-    pass
+def parsConfig(Tab):
+    NewTab=[]
+    for Item in Tab:
+        NewTab.append(Item[0].split("="))
+
+    Dictionary={}
+    
+    for Item in NewTab:
+        Dictionary[Item[0]]=Item[1]
+
+    return Dictionary
 
 ####################################################################
 
@@ -156,10 +166,13 @@ signal(SIGWINCH,resizeHandler)
 
 def main():
 
+    Tab=openFile("config.txt")
+    Dictionary=parsConfig(Tab)
+
     initscr()
 
     Rows,Cols=stdscr.getmaxyx()
-    generateBord(1000)
+    generateBord(int(Dictionary["board_size"]))
     generateStartConf(Rows,Cols,500)
     # Generate board with start configuration
 
@@ -169,7 +182,7 @@ def main():
 
         Iter=1
         while True:
-            time.sleep(0.1)
+            time.sleep(float(Dictionary["sleep_time"]))
 
             calculateTransformation(Rows,Cols)
             copyArray()
