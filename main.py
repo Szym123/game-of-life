@@ -23,7 +23,7 @@ def openFile(Name):
             Line=File.readline()
             if not Line:
                 break
-            Tab.append(Line.split())
+            Tab.append(Line)
         # read file line by line
 
         return Tab
@@ -38,27 +38,34 @@ def openFile(Name):
 def parsConfig(Tab):
     NewTab=[]
     for Item in Tab:
-        if "#" in Item[0]:
+        if "#"==Item[0]:
             continue
         # Not read line started with "#"
-        NewTab.append(Item[0].split("="))
+        NewTab.append(Item.split("="))
 
     Dictionary={}
     for Item in NewTab:
-        Dictionary[Item[0]]=Item[1]
+        Dictionary[Item[0]]=Item[1].rstrip()
 
     return Dictionary
 
 ####################################################################
 
-def generateBord(Size):
-    Rows,Cols=stdscr.getmaxyx()
+def generateBoard(Size):
     for _ in range(Size):
         Board.append([" " for _ in range(Size)])
     # Generate matrix of dead cell with specific size
 
     for _ in range(Size):
         NewBoard.append([" " for _ in range(Size)])
+
+####################################################################
+
+def parsSeed(Tab):
+    for IterY in range(len(Tab)):
+        for IterX in range(len(Tab[IterY])):
+            if Tab[IterY][IterX]=="O":
+                Board[IterY][IterX]="O"
 
 ####################################################################
 
@@ -155,11 +162,11 @@ def calculateTransformation(Rows,Cols):
         while IterX<(Cols-2):
             Sum=sumOfNeighbors(IterY,IterX)
 
-            if NewBoard[IterY][IterX]==" " and Sum==3:
+            if Board[IterY][IterX]==" " and Sum==3:
                 NewBoard[IterY][IterX]="O"
             # When dead cell have 3 neighbors, he start be alive
 
-            if NewBoard[IterY][IterX]=="O" and Sum in [2,3]:
+            if Board[IterY][IterX]=="O" and Sum in [2,3]:
                 NewBoard[IterY][IterX]="O"
             # When alive cell have 2 or 3 neighbors, he stay alive
 
@@ -173,11 +180,10 @@ def calculateTransformation(Rows,Cols):
 
 ####################################################################
 
-def copyArray():
-    Iter=0
-    for Item in NewBoard:
-        Board[Iter]=Item
-        Iter+=1
+def copyArray(Size):
+    for Iter in range(len(NewBoard)):
+        Board[Iter]=NewBoard[Iter]
+        NewBoard[Iter]=[" " for _ in range(Size)]
     # This update all cells in same time
 
 ####################################################################
@@ -194,9 +200,12 @@ def main():
     initscr()
 
     Rows,Cols=stdscr.getmaxyx()
-    generateBord(int(Dictionary["board_size"]))
+    generateBoard(int(Dictionary["board_size"]))
     generateStartConf(Rows,Cols,int(Dictionary["numbers_of_cell"]),80,Dictionary["random_distribution"])
     # Generate board with start configuration
+
+    #Seed=openFile("seed.txt")
+    #parsSeed(Seed)
 
     try:
         drawStdScreen()
@@ -207,7 +216,7 @@ def main():
             time.sleep(float(Dictionary["sleep_time"]))
 
             calculateTransformation(Rows,Cols)
-            copyArray()
+            copyArray(int(Dictionary["board_size"]))
             # Calculate new position of cells and 
             # update them in same time
 
