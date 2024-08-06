@@ -38,10 +38,12 @@ def openFile(Name):
 def parsConfig(Tab):
     NewTab=[]
     for Item in Tab:
+        if "#" in Item[0]:
+            continue
+        # Not read line started with "#"
         NewTab.append(Item[0].split("="))
 
     Dictionary={}
-    
     for Item in NewTab:
         Dictionary[Item[0]]=Item[1]
 
@@ -50,7 +52,6 @@ def parsConfig(Tab):
 ####################################################################
 
 def generateBord(Size):
-
     Rows,Cols=stdscr.getmaxyx()
     for _ in range(Size):
         Board.append([" " for _ in range(Size)])
