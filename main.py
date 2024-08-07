@@ -155,11 +155,11 @@ def sumOfNeighbors(PosY,PosX):
 
 ####################################################################
 
-def calculateTransformation(Rows,Cols):
+def calculateTransformation(Size):
     IterY=0
-    while IterY<(Rows-2):
+    while IterY<(Size):
         IterX=0
-        while IterX<(Cols-2):
+        while IterX<(Size):
             Sum=sumOfNeighbors(IterY,IterX)
 
             if Board[IterY][IterX]==" " and Sum==3:
@@ -201,11 +201,11 @@ def main():
 
     Rows,Cols=stdscr.getmaxyx()
     generateBoard(int(Dictionary["board_size"]))
-    generateStartConf(Rows,Cols,int(Dictionary["numbers_of_cell"]),80,Dictionary["random_distribution"])
+    #generateStartConf(Rows,Cols,int(Dictionary["numbers_of_cell"]),80,Dictionary["random_distribution"])
     # Generate board with start configuration
 
-    #Seed=openFile("seed.txt")
-    #parsSeed(Seed)
+    Seed=openFile("seed.txt")
+    parsSeed(Seed)
 
     try:
         drawStdScreen()
@@ -215,7 +215,7 @@ def main():
         while True:
             time.sleep(float(Dictionary["sleep_time"]))
 
-            calculateTransformation(Rows,Cols)
+            calculateTransformation(int(Dictionary["board_size"]))
             copyArray(int(Dictionary["board_size"]))
             # Calculate new position of cells and 
             # update them in same time
