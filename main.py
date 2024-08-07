@@ -30,8 +30,9 @@ def openFile(Name):
         # return table of line
 
     except:
-        print("There is problem with config.txt")
+        print("There is problem with ",Name)
         exit()
+        # return file error
 
 ####################################################################
 
@@ -42,10 +43,12 @@ def parsConfig(Tab):
             continue
         # Not read line started with "#"
         NewTab.append(Item.split("="))
+        # Add new item ass list to NewTab
 
     Dictionary={}
     for Item in NewTab:
         Dictionary[Item[0]]=Item[1].rstrip()
+    # Add item from NewTab as new entry to dictionary
 
     return Dictionary
 
@@ -58,23 +61,28 @@ def generateBoard(Size):
 
     for _ in range(Size):
         NewBoard.append([" " for _ in range(Size)])
+    # Generate matrix of dead cell with specific size
 
 ####################################################################
 
-def parsSeed(Tab):
-    for IterY in range(len(Tab)):
-        for IterX in range(len(Tab[IterY])):
-            if Tab[IterY][IterX]=="O":
+def parsSeed(Seed):
+    for IterY in range(len(Seed)):
+        for IterX in range(len(Seed[IterY])):
+            if Seed[IterY][IterX]=="O":
                 Board[IterY][IterX]="O"
+            # when in a particular position in seed is living cell
+            # copy them to board
 
 ####################################################################
 
 def modifiedGauss(Range):
     while True:
         Result=int(random.gauss(Range/2,8.0))
+        # Generate random variable from Gauss distribution
 
         if 0<=Result<=Range:
             return Result
+        # Return varieble only when is between 0 and range
 
 ####################################################################
 
@@ -83,12 +91,12 @@ def generateStartConf(Rows,Cols,Number,Range,Option):
         if Option=="fixed":
             y=random.randrange(Rows-2)
             x=random.randrange(Cols-2)
-        # Generate with fixed distribution
+        # Generate from fixed distribution
 
         elif Option=="triang":
             y=int(Range*random.triangular(0,1))
             x=int(Range*random.triangular(0,1))
-        # Generate with triangular distribution
+        # Generate from triangular distribution
 
         elif Option=="gauss":
             y=modifiedGauss(50)
@@ -105,8 +113,10 @@ def drawBoard(Rows,Cols):
         String=""
         for PosX in range(Cols-2):
             String+=Board[PosY][PosX]
+        # Sum cell from line in board into string
 
         stdscr.addnstr(PosY+1,1,String,Cols-1)
+        # Draw line of board
 
 ####################################################################
 
@@ -121,8 +131,10 @@ def drawStdScreen():
     # Draw border with name of program
 
     drawBoard(Rows,Cols)
+    # Draw board with cell
 
     stdscr.addnstr(Rows-1,1," Step: 1 ",Cols-1)
+    # Draw number of first step
 
     stdscr.refresh()
 
