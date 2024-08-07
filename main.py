@@ -91,11 +91,11 @@ def modifiedGauss(Range):
 
 ####################################################################
 
-def generateStartConf(Rows,Cols,Number,Range,Option):
+def generateStartConf(Number,Range,Option):
     for Iter in range(Number):
         if Option=="fixed":
-            y=random.randrange(Rows-2)
-            x=random.randrange(Cols-2)
+            y=random.randrange(Range)
+            x=random.randrange(Range)
         # Generate from fixed distribution
 
         elif Option=="triang":
@@ -230,15 +230,16 @@ def main():
     Dictionary=parsConfig(Tab)
     # Dowload and pars configuration data
 
-    initscr()
-
-    Rows,Cols=stdscr.getmaxyx()
     generateBoard(int(Dictionary["board_size"]))
-    #generateStartConf(Rows,Cols,int(Dictionary["numbers_of_cell"]),80,Dictionary["random_distribution"])
-    # Generate board with start configuration
+    # Generate board
 
-    Seed=openFile("seed.txt")
-    parsSeed(Seed)
+    if "seed" in Flag:
+        Seed=openFile(Flag["seed"])
+        parsSeed(Seed)
+    else:   
+        generateStartConf(int(Dictionary["numbers_of_cell"]),80,Dictionary["random_distribution"])
+
+    initscr()
 
     try:
         drawStdScreen()
@@ -246,6 +247,8 @@ def main():
 
         Iter=1
         while True:
+            Rows,Cols=stdscr.getmaxyx()
+
             time.sleep(float(Dictionary["sleep_time"]))
 
             calculateTransformation(int(Dictionary["board_size"]))
