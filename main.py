@@ -1,8 +1,13 @@
+#!/usr/bin/env python3
+# -*- coding: utf8 -*-
+
 from curses import initscr,endwin
 from signal import signal,SIGWINCH
 
 import random
 import time
+import sys
+import getopt
 
 ####################################################################
 
@@ -200,12 +205,28 @@ def copyArray(Size):
 
 ####################################################################
 
+def parsFlag():
+    Dictionary={'config':'config.txt'}
+
+    Opts,Args=getopt.getopt(sys.argv[1:],"s:c:",["seed=","config="])#Reading command Line Option
+    for O,B in Opts:
+        if O in("-s","--seed"):
+            Dictionary["seed"]=B
+        elif O in("-c","--config"):
+            Dictionary["config"]=B
+
+    return Dictionary
+
+####################################################################
+
 signal(SIGWINCH,resizeHandler)
 
 ####################################################################    
 
 def main():
-    Tab=openFile("config.txt")
+    Flag=parsFlag()
+
+    Tab=openFile(Flag["config"])
     Dictionary=parsConfig(Tab)
     # Dowload and pars configuration data
 
@@ -252,4 +273,4 @@ def main():
 ####################################################################
 
 if __name__=="__main__":
-	main()
+    main()
