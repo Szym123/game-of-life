@@ -17,6 +17,13 @@ NewBoard=[]
 
 ####################################################################
 
+def handlingError(Text):
+    endwin()
+    print(Text)
+    exit()
+
+####################################################################
+
 def openFile(Name):
     Tab=[]
 
@@ -35,27 +42,29 @@ def openFile(Name):
         # return table of line
 
     except:
-        print("There is problem with ",Name)
-        exit()
+        handlingError("There is problem with "+str(Name))
         # return file error
 
 ####################################################################
 
 def parsConfig(Tab):
-    NewTab=[]
-    for Item in Tab:
-        if "#"==Item[0]:
-            continue
-        # Not read line started with "#"
-        NewTab.append(Item.split("="))
-        # Add new item ass list to NewTab
+    try:
+        NewTab=[]
+        for Item in Tab:
+            if "#"==Item[0]:
+                continue
+            # Not read line started with "#"
+            NewTab.append(Item.split("="))
+            # Add new item ass list to NewTab
 
-    Dictionary={}
-    for Item in NewTab:
-        Dictionary[Item[0]]=Item[1].rstrip()
-    # Add item from NewTab as new entry to dictionary
+        Dictionary={}
+        for Item in NewTab:
+            Dictionary[Item[0]]=Item[1].rstrip()
+        # Add item from NewTab as new entry to dictionary
 
-    return Dictionary
+        return Dictionary
+    except:
+        handlingError("There is problem with config file")
 
 ####################################################################
 
@@ -208,12 +217,52 @@ def copyArray(Size):
 def parsFlag():
     Dictionary={'config':'config.txt'}
 
-    Opts,Args=getopt.getopt(sys.argv[1:],"s:c:",["seed=","config="])#Reading command Line Option
-    for O,B in Opts:
-        if O in("-s","--seed"):
-            Dictionary["seed"]=B
-        elif O in("-c","--config"):
-            Dictionary["config"]=B
+    try:
+        Opts,Args=getopt.getopt(sys.argv[1:],"s:c:",["seed=","config="])#Reading command Line Option
+        for O,B in Opts:
+            if O in("-s","--seed"):
+                Dictionary["seed"]=B
+            elif O in("-c","--config"):
+                Dictionary["config"]=B
+
+        return Dictionary
+    except:
+        handlingError("Incorrect flags or values")
+        # Return flag error
+
+####################################################################
+
+def findConfigError(Dictionary):
+
+# board_size -> int
+# numbers_of_cell - > int
+# sleep_time -> float
+# random_distribution -> str
+
+    for Item in ["board_size","numbers_of_cell"]:
+        if Item in Dictionary:
+            try:
+                Dictionary[Item]=int(Dictionary[Item])
+            except:
+                handlingError("There is problem with ",Item)
+        else:
+            handlingError(Item+" does not exits")
+
+    if "sleep_time" in Dictionary:
+        try:
+            Dictionary["sleep_time"]=float(Dictionary["sleep_time"])
+        except:
+            handlingError("There is problem with sleep_time")
+    else:
+        handlingError("sleep_time does not exits")
+
+    if "random_distribution" in Dictionary:
+        try:
+            Dictionary["random_distribution"]=str(Dictionary["random_distribution"])
+        except:
+            handlingError("There is problem with random_distribution")
+    else:
+        handlingError("random_distribution does not exits")
 
     return Dictionary
 
@@ -228,6 +277,7 @@ def main():
 
     Tab=openFile(Flag["config"])
     Dictionary=parsConfig(Tab)
+    Dictionary=findConfigError(Dictionary)
     # Dowload and pars configuration data
 
     generateBoard(int(Dictionary["board_size"]))
