@@ -218,12 +218,14 @@ def parsFlag():
     Dictionary={'config':'config.txt'}
 
     try:
-        Opts,Args=getopt.getopt(sys.argv[1:],"s:c:",["seed=","config="])#Reading command Line Option
+        Opts,Args=getopt.getopt(sys.argv[1:],"s:c:",["seed=","config="])
+        #Reading command line option
         for O,B in Opts:
             if O in("-s","--seed"):
                 Dictionary["seed"]=B
             elif O in("-c","--config"):
                 Dictionary["config"]=B
+        # Pars command line option
 
         return Dictionary
     except:
@@ -233,12 +235,6 @@ def parsFlag():
 ####################################################################
 
 def findConfigError(Dictionary):
-
-# board_size -> int
-# numbers_of_cell - > int
-# sleep_time -> float
-# random_distribution -> str
-
     for Item in ["board_size","numbers_of_cell"]:
         if Item in Dictionary:
             try:
@@ -247,6 +243,9 @@ def findConfigError(Dictionary):
                 handlingError("There is problem with ",Item)
         else:
             handlingError(Item+" does not exits")
+    # Finding error in:
+    # - board_size -> int
+    # - numbers_of_cell - > int
 
     if "sleep_time" in Dictionary:
         try:
@@ -255,6 +254,7 @@ def findConfigError(Dictionary):
             handlingError("There is problem with sleep_time")
     else:
         handlingError("sleep_time does not exits")
+    # Finding error in sleep_time -> float
 
     if "random_distribution" in Dictionary:
         try:
@@ -263,12 +263,14 @@ def findConfigError(Dictionary):
             handlingError("There is problem with random_distribution")
     else:
         handlingError("random_distribution does not exits")
+    # Finding error in random_distribution -> str
 
     return Dictionary
 
 ####################################################################
 
 signal(SIGWINCH,resizeHandler)
+# System interrupt
 
 ####################################################################    
 
@@ -280,14 +282,16 @@ def main():
     Dictionary=findConfigError(Dictionary)
     # Dowload and pars configuration data
 
-    generateBoard(int(Dictionary["board_size"]))
+    generateBoard(Dictionary["board_size"])
     # Generate board
 
     if "seed" in Flag:
         Seed=openFile(Flag["seed"])
         parsSeed(Seed)
+        # Generate start cell configuration using seed
     else:   
-        generateStartConf(int(Dictionary["numbers_of_cell"]),80,Dictionary["random_distribution"])
+        generateStartConf(Dictionary["numbers_of_cell"],80,Dictionary["random_distribution"])
+        # Generate random start cell configuretion
 
     initscr()
 
@@ -299,10 +303,10 @@ def main():
         while True:
             Rows,Cols=stdscr.getmaxyx()
 
-            time.sleep(float(Dictionary["sleep_time"]))
+            time.sleep(Dictionary["sleep_time"])
 
-            calculateTransformation(int(Dictionary["board_size"]))
-            copyArray(int(Dictionary["board_size"]))
+            calculateTransformation(Dictionary["board_size"])
+            copyArray(Dictionary["board_size"])
             # Calculate new position of cells and 
             # update them in same time
 
