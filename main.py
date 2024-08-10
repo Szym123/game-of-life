@@ -214,17 +214,35 @@ def copyArray(Size):
 
 ####################################################################
 
+def getHelp():
+    endwin()
+    
+    print("Usage: ./main.py [OPTION]...")
+    print("implementation of the Game of Life,")
+    print("generates a board filled with cells and allows you to observe their development")
+    print("")
+    print(" -c / --config=FILE   reads the settings from the specified FILE, the default is config.txt")
+    print(" -s / --seed=FILE     reads the initial state from the specified FILE")
+    print(" -h / --help          display this help and exit")
+    print("")
+
+    exit()
+
+####################################################################
+
 def parsFlag():
     Dictionary={'config':'config.txt'}
 
     try:
-        Opts,Args=getopt.getopt(sys.argv[1:],"s:c:",["seed=","config="])
+        Opts,Args=getopt.getopt(sys.argv[1:],"s:c:h",["seed=","config=","help"])
         #Reading command line option
         for O,B in Opts:
             if O in("-s","--seed"):
                 Dictionary["seed"]=B
             elif O in("-c","--config"):
                 Dictionary["config"]=B
+            elif O in("-h","--help"):
+                Dictionary["help"]="help"
         # Pars command line option
 
         return Dictionary
@@ -276,6 +294,9 @@ signal(SIGWINCH,resizeHandler)
 
 def main():
     Flag=parsFlag()
+
+    if "help" in Flag:
+        getHelp()
 
     Tab=openFile(Flag["config"])
     Dictionary=parsConfig(Tab)
