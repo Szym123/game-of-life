@@ -101,7 +101,7 @@ def modifiedGauss(Range):
 ####################################################################
 
 def generateStartConf(Number,Range,Option):
-    for Iter in range(Number):
+    for _ in range(Number):
         if Option=="fixed":
             y=random.randrange(Range)
             x=random.randrange(Range)
@@ -227,11 +227,24 @@ def getHelp():
 
 ####################################################################
 
+def printLen():
+    Rows,Cols=stdscr.getmaxyx()
+    endwin()
+
+    print("Size of window:")
+    print("x: "+str(Cols))
+    print("y: "+str(Rows))
+    print("")
+
+    exit()
+
+####################################################################
+
 def parsFlag():
     Dictionary={'config':'config.txt'}
 
     try:
-        Opts,Args=getopt.getopt(sys.argv[1:],"s:c:h",["seed=","config=","help"])
+        Opts,Args=getopt.getopt(sys.argv[1:],"s:c:hl",["seed=","config=","help","len"])
         #Reading command line option
         for O,B in Opts:
             if O in("-s","--seed"):
@@ -240,6 +253,8 @@ def parsFlag():
                 Dictionary["config"]=B
             elif O in("-h","--help"):
                 Dictionary["help"]="help"
+            elif O in ("-l","--len"):
+                Dictionary["len"]="len"
         # Pars command line option
 
         return Dictionary
@@ -305,6 +320,9 @@ def main():
 
     if "help" in Flag:
         getHelp()
+    # print help and exit
+    elif "len" in Flag:
+        printLen()
 
     Tab=openFile(Flag["config"])
     Dictionary=parsConfig(Tab)
@@ -319,7 +337,7 @@ def main():
         parsSeed(Seed)
         # Generate start cell configuration using seed
     else:   
-        generateStartConf(Dictionary["numbers_of_cell"],80,Dictionary["random_distribution"])
+        generateStartConf(Dictionary["numbers_of_cell"],Dictionary["board_size"],Dictionary["random_distribution"])
         # Generate random start cell configuretion
 
     initscr()
