@@ -1,0 +1,31 @@
+# Board side length
+#
+# Defalt: 250
+# Value: any int
+#
+board_size=250
+
+# Waiting time[s] between game steps
+#
+# Defalt: 0.1
+# Value: any float
+#
+sleep_time=0.1
+
+# Number of cells that will appear on the board, 
+# works only in random mode
+#
+# Defalt: 8000
+# Value: any int
+#
+numbers_of_cell=8000
+
+# Draws the distribution of cells according to
+# the selected distribution, 
+# works only in random mode
+#
+# Defalt: fixed
+# Flag: triang
+#       gauss
+#
+random_distribution=fixed
