@@ -129,7 +129,10 @@ def drawBoard(Rows,Cols):
     for PosY in range(Rows-2):
         String=""
         for PosX in range(Cols-2):
-            String+=Board[PosY][PosX]
+            try:
+                String+=Board[PosY][PosX]
+            except:
+                String+=" "
         # Sum cell from line in board into string
 
         stdscr.addnstr(PosY+1,1,String,Cols-1)
