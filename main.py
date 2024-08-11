@@ -54,6 +54,9 @@ def parsConfig(Tab):
             if "#"==Item[0]:
                 continue
             # Not read line started with "#"
+            if "\n"==Item:
+                continue
+            # Not read blank line
             NewTab.append(Item.split("="))
             # Add new item ass list to NewTab
 
