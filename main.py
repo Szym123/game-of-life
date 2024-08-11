@@ -220,6 +220,7 @@ def getHelp():
     print("")
     print(" -c / --config=FILE   reads the settings from the specified FILE, the default is config.txt")
     print(" -s / --seed=FILE     reads the initial state from the specified FILE")
+    print(" -l / --len           display size of your window (how many characters will fit)")
     print(" -h / --help          display this help and exit")
     print("")
 
@@ -323,6 +324,7 @@ def main():
     # print help and exit
     elif "len" in Flag:
         printLen()
+    # print size of window
 
     Tab=openFile(Flag["config"])
     Dictionary=parsConfig(Tab)
@@ -354,6 +356,7 @@ def main():
             # Draw number of step
 
             stdscr.addnstr(Rows-1,14," Number of cell: "+str(sumAllCell()),Cols-1)
+            # Draw sum of cell
 
             time.sleep(Dictionary["sleep_time"])
 
