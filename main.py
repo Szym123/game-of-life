@@ -113,8 +113,8 @@ def generateStartConf(Number,Range,Option):
         # Generate from triangular distribution
 
         elif Option=="gauss":
-            y=modifiedGauss(50)
-            x=modifiedGauss(50)
+            y=modifiedGauss(Range)
+            x=modifiedGauss(Range)
         # Generate with Gauss distribution
 
         Board[y][x]="O"
@@ -146,9 +146,6 @@ def drawStdScreen():
 
     drawBoard(Rows,Cols)
     # Draw board with cell
-
-    stdscr.addnstr(Rows-1,1," Step: 1 ",Cols-1)
-    # Draw number of first step
 
     stdscr.refresh()
 
@@ -287,6 +284,17 @@ def findConfigError(Dictionary):
 
 ####################################################################
 
+def sumAllCell():
+    Sum=0
+    for Line in Board:
+        for Cell in Line:
+            if Cell=="O":
+                Sum+=1
+
+    return Sum
+
+####################################################################
+
 signal(SIGWINCH,resizeHandler)
 # System interrupt
 
@@ -324,6 +332,11 @@ def main():
         while True:
             Rows,Cols=stdscr.getmaxyx()
 
+            stdscr.addnstr(Rows-1,1," Step: "+str(Iter),Cols-1)
+            # Draw number of step
+
+            stdscr.addnstr(Rows-1,14," Number of cell: "+str(sumAllCell()),Cols-1)
+
             time.sleep(Dictionary["sleep_time"])
 
             calculateTransformation(Dictionary["board_size"])
@@ -333,9 +346,6 @@ def main():
 
             drawBoard(Rows,Cols)
             # Redraw board
-
-            stdscr.addnstr(Rows-1,1," Step: "+str(Iter)+" ",Cols-1)
-            # Redraw number of step
 
             Iter+=1
 
